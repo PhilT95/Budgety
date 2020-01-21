@@ -1,0 +1,14 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: NanumGothicCoding-Regular
+font link: https://fonts.google.com/specimen/Nanum+Gothic+Coding
+font author: Sandoll
+font author site: http://www.sandoll.co.kr/en/
+
+
+icon designer: Leonardo Schneider
+icon designer link: /leonardo.schneider
+        
+{"bg":"#EBF2F2","icon-gradient-0":"#050922","icon-gradient-1":"#6EE6C7","font":"#0F2020","slogan":"#233434"}
+      
