@@ -19,12 +19,12 @@ Databases get encrypted with **SQLCipher** and **Room**
 
 #### Finance database
 
-<img src="database_concepts/concept_financeDB.png" alt="drawing" width="1200"/>
+<img src="database_concepts/concept_financeDB.png" width="1200"/>
 
 Store data monthly and daily for 2 years, then archive them into archive database?
 #### Configuration database
 
-<img src="database_concepts/concept_appDB.png" alt="drawing" width="400"/>
+<img src="database_concepts/concept_appDB.png" width="400"/>
 
 #### Archive Database
 Contains data older then 2 years

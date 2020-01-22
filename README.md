@@ -1,4 +1,4 @@
-<img src="logo/cover.png" alt="drawing" width="600"/>
+<img src="logo/vector/default-monochrome.svg"  width="400"/>
 
 ## What is this app about?
 
@@ -9,6 +9,6 @@ Right now the concept of the app is being worked on.
  
 
   
-Last updated on Freitag, 17. Januar 2020 11:55 
+Last updated on Wednesday, 22. January 2020 06:29PM 
    
 &copy; 2020 Budgety
