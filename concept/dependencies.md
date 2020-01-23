@@ -8,3 +8,16 @@ All stuff related to the databases:
 
 ### Encryption & Security
 - [Android Keystore](https://developer.android.com/training/articles/keystore) --> The Keystore can work as the place where the encryption key for the password is saved. The database gets encrypted with the decrypted user password (or a hash of that).
+
+
+### Graphs &  Charts
+- [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
+	- clickable charts
+	- lots of charts
+	- widely used 
+- [AnyChart](https://github.com/AnyChart/AnyChart-Android)
+- [Google Charts](https://developers.google.com/chart)
+
+### Currency APIs
+- [Exchange rates API](https://exchangeratesapi.io/) 
+- [Fixer.io](https://fixer.io/) 
