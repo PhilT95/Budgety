@@ -1,6 +1,10 @@
 # Concepts
 
-## Delevopment Ideas
+## Navigation concept
+<img src="app_concepts/app_nav.jpg" width="1200"/>
+
+
+## Development ideas
 #### Data Sync
 Summaries, Budgets etc. need to be changed when Transaction gets created, changed or deleted. The best way to implement it seems to be:  
 
