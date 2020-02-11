@@ -7,10 +7,10 @@ The first step will putting the concept into an android app. Later, the app migh
 
 
 #### What's going on?
-Right now the concept of the app is being worked on.  
+The basic Concept has been developed. First steps with the android project creation will be started. The App Development process is in its beginning. 
  
 
   
-Last updated on Monday, 27. January 2020 05:49PM 
+Last updated on Tuesday, 11. February 2020 08:20PM 
    
 &copy; 2020 Budgety
