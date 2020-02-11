@@ -16,7 +16,8 @@ All stuff related to the databases:
 	- lots of charts
 	- widely used 
 - [AnyChart](https://github.com/AnyChart/AnyChart-Android)
-- [Google Charts](https://developers.google.com/chart)
+- [Google Charts](https://developers.google.com/chart) & [More Google Charts](https://developers.google.com/chart/interactive/docs/gallery)
+- [More chart  APIs](https://stackoverflow.com/questions/9741300/charts-for-android)
 
 ### Currency APIs
 - [Exchange rates API](https://exchangeratesapi.io/) 

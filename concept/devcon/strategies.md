@@ -3,6 +3,8 @@
 A collection of development strategies, useful guides etc.
 As a fundemental the app will be developed using **Android Studio**. The guides and strategies need to be based on this IDE.
 
+##
+
 
 ### Database backup
 Database backup can be done by just copying the database itself. The backup can be made manually or automatically. Also the place of the backup should be choosable. Places could be:
@@ -25,3 +27,9 @@ Guides for that are below.
 ### Guides for App components
 
 - [Navigation Drawer](https://developer.android.com/guide/navigation/navigation-ui)  --> Component that can be used as the **Main Menu** 
+
+## 
+### Patch Numbering
+Version numbers like following
+- Major.Minor.Fixes
+- see [Wikipedia](https://en.wikipedia.org/wiki/Software_versioning) 
