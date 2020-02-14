@@ -1,4 +1,4 @@
-<img src="logo/vector/default-monochrome.svg"  width="400"/>
+<img src="resources/logo/vector/default-monochrome.svg"  width="400"/>
 
 ## What is this app about?
 
@@ -11,6 +11,6 @@ The basic Concept has been developed. First steps with the android project creat
  
 
   
-Last updated on Tuesday, 11. February 2020 08:20PM 
+Last updated on Friday, 14. February 2020 10:38PM 
    
 &copy; 2020 Budgety
