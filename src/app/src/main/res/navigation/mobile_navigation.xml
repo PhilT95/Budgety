@@ -45,4 +45,45 @@
         android:name="com.budgety.ui.main.accounts.AccountsFragment"
         android:label="@string/menu_accounts"
         tools:layout="@layout/fragment_accounts" />
+    <fragment
+        android:id="@+id/nav_budgets"
+        android:name="com.budgety.ui.main.budgets.BudgetsFragment"
+        android:label="@string/menu_budgets"
+        tools:layout="@layout/fragment_budgets" />
+    <fragment
+        android:id="@+id/nav_categories"
+        android:name="com.budgety.ui.main.categories.CategoriesFragment"
+        android:label="@string/menu_categories"
+        tools:layout="@layout/fragment_categories" />
+    <fragment
+        android:id="@+id/nav_stores"
+        android:name="com.budgety.ui.main.stores.StoresFragment"
+        android:label="@string/menu_stores"
+        tools:layout="@layout/fragment_stores" />
+    <fragment
+        android:id="@+id/nav_debts"
+        android:name="com.budgety.ui.main.debts.DebtsFragment"
+        android:label="@string/menu_debts"
+        tools:layout="@layout/fragment_debts" />
+    <fragment
+        android:id="@+id/nav_templates"
+        android:name="com.budgety.ui.main.templates.TemplatesFragment"
+        android:label="@string/menu_templates"
+        tools:layout="@layout/fragment_templates" />
+    <fragment
+        android:id="@+id/nav_planned"
+        android:name="com.budgety.ui.main.planned.PlannedFragment"
+        android:label="@string/menu_planned"
+        tools:layout="@layout/fragment_planned" />
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="com.budgety.ui.main.about.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.budgety.ui.main.settings.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settings" />
+
 </navigation>

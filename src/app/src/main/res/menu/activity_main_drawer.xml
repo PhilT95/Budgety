@@ -8,36 +8,49 @@
 
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_accounts"
-            android:icon="@drawable/ic_account_balance_black_24dp"
+            android:icon="@drawable/ic_menu_accounts"
             android:title="@string/menu_accounts"/>
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_budgets"
+            android:icon="@drawable/ic_menu_budgets"
+            android:title="@string/menu_budgets" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_categories"
+            android:icon="@drawable/ic_menu_categories"
+            android:title="@string/menu_categories" />
         <item
-            android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/menu_tools" />
+            android:id="@+id/nav_stores"
+            android:icon="@drawable/ic_menu_stores"
+            android:title="@string/menu_stores" />
+        <item
+            android:id="@+id/nav_debts"
+            android:icon="@drawable/ic_menu_debts"
+            android:title="@string/menu_debts" />
+        <item
+            android:id="@+id/nav_planned"
+            android:icon="@drawable/ic_menu_planned"
+            android:title="@string/menu_planned"/>
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/menu_subTitle">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/menu_share" />
+                android:id="@+id/nav_templates"
+                android:icon="@drawable/ic_menu_templates"
+                android:title="@string/menu_templates" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/menu_send" />
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_menu_settings"
+                android:title="@string/menu_settings"/>
+
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_menu_about"
+                android:title="@string/menu_about" />
         </menu>
     </item>
 

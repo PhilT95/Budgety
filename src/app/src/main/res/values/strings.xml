@@ -22,5 +22,18 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+
+
     <string name="menu_accounts">Accounts</string>
+    <string name="menu_budgets">Budgets</string>
+    <string name="menu_categories">Categories</string>
+    <string name="menu_stores">Stores</string>
+    <string name="menu_debts">Debts</string>
+    <string name="menu_templates">Templates</string>
+
+    <string name="menu_subTitle">Configure</string>
+    <string name="menu_planned">Planned Payments</string>
+    <string name="menu_about">About</string>
+    <string name="menu_settings">Settings</string>
+
 </resources>
