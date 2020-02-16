@@ -15,10 +15,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.ui.main.settings
+package com.budgety.ui.login.create
 
 import androidx.lifecycle.ViewModel
 
-class SettingsViewModel : ViewModel() {
+class LoginCreateViewModel : ViewModel() {
     // TODO: Implement the ViewModel
 }

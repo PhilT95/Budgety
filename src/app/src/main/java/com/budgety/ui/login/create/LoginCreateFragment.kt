@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.ui.main.accounts
+package com.budgety.ui.login.create
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -26,21 +26,21 @@ import androidx.lifecycle.ViewModelProvider
 
 import com.budgety.R
 
-class AccountsFragment : Fragment() {
+class LoginCreateFragment : Fragment() {
 
     companion object {
-        fun newInstance() = AccountsFragment()
+        fun newInstance() = LoginCreateFragment()
     }
 
-    private lateinit var viewModel: AccountsViewModel
+    private lateinit var viewModel: LoginCreateViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_accounts, container, false)
+        return inflater.inflate(R.layout.fragment_login_create, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AccountsViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(LoginCreateViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

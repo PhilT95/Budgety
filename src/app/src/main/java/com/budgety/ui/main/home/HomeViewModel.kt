@@ -15,10 +15,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.ui.main.settings
+package com.budgety.ui.main.home
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SettingsViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class HomeViewModel : ViewModel() {
+
+    private val _text = MutableLiveData<String>().apply {
+        value = "This is home Fragment"
+    }
+    val text: LiveData<String> = _text
 }
