@@ -72,6 +72,10 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$version_navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$version_navigation"
 
+    //Room Database
+    implementation "androidx.room:room-runtime:$version_room"
+    kapt "androidx.room:room-compiler:$version_room"
+
 
     // Core with Ktx
     implementation "androidx.core:core-ktx:$version_core"
@@ -112,4 +116,8 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation "junit:junit:$version_junit"
+
+    //SQL Cipher
+    implementation "net.zetetic:android-database-sqlcipher:$version_sqlcipher"
+    implementation "androidx.sqlite:sqlite:$version_sqlite"
 }

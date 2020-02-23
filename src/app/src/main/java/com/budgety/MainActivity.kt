@@ -77,12 +77,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun getLoggedInUser() {
         val getLoggedInUserIntent = Intent(this, LoginActivity::class.java)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                //.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
                 .apply {
 
         }
 
-        startActivity(getLoggedInUserIntent)
+        startActivityForResult(getLoggedInUserIntent, LOGIN_REQUEST)
     }
 
 

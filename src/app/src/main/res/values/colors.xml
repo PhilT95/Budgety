@@ -8,5 +8,6 @@
         <color name="secondaryDarkColor">#c77800</color>
         <color name="primaryTextColor">#ffffff</color>
         <color name="secondaryTextColor">#000000</color>
+        <color name="textLinkColor">#0000EE</color>
 </resources>
 

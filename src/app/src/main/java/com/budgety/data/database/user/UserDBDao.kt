@@ -15,11 +15,26 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data.model
+package com.budgety.data.database.user
 
-/**
- * Data class that captures user information for logged in users retrieved from LoginRepository
- */
-data class LoggedInUser(
-        val userId: String,
-        val displayName: String)
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
+
+@Dao
+interface UserDBDao {
+
+    @Insert
+    fun insert(user: BudgetyUser)
+
+    @Update
+    fun update(user: BudgetyUser)
+
+    @Query("SELECT * FROM users WHERE user_name = :username")
+    fun getUser(username: String) : LiveData<BudgetyUser>
+
+
+
+}

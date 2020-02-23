@@ -1,13 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".ui.login.create.LoginCreateFragment">
 
-    <TextView
+    <data>
+        <variable
+            name="viewModel"
+            type="com.budgety.ui.login.create.LoginCreateViewModel" />
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:fillViewport="true">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/login_standard_margin">
+
+
+            <EditText
+                android:id="@+id/username_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_create_element_margin"
+                android:ems="10"
+                android:hint="@string/prompt_username_new"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/email_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_create_element_margin"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="@string/prompt_email_new"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/password_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_create_element_margin"
+                android:ems="10"
+                android:hint="@string/prompt_password_new"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/password_create_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_create_element_margin"
+                android:ems="10"
+                android:hint="@string/prompt_password_new_check"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/account_create"
+                style="@android:style/Widget.Material.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_create_element_margin"
+                android:text="@string/action_create_account" />
+                 <!--android:layout_weight="0"-->
+
+            <TextView
+                android:id="@+id/back_login"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/login_create_element_margin"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="10dp"
+                android:text="@string/login_goback_link"
+                android:textColor="@color/textLinkColor" />
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+</layout>

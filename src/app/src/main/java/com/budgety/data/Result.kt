@@ -17,6 +17,7 @@
 
 package com.budgety.data
 
+
 /**
  * A generic class that holds a value with its loading status.
  * @param <T>
@@ -24,12 +25,14 @@ package com.budgety.data
 sealed class Result<out T : Any> {
 
     data class Success<out T : Any>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
+    data class Error(val error: String): Result<Nothing>()
+    data class ErrorException(val exception: Exception) : Result<Nothing>()
 
     override fun toString(): String {
         return when (this) {
             is Success<*> -> "Success[data=$data]"
-            is Error -> "Error[exception=$exception]"
+            is ErrorException -> "Error[exception=$exception]"
+            is Error -> "Error while logging in. [error=$error]"
         }
     }
 }

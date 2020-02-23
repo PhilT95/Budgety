@@ -15,28 +15,21 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data
+package com.budgety
 
-import com.budgety.data.model.LoggedInUser
-import java.io.IOException
+import com.budgety.data.database.user.BudgetyUser
+import org.junit.Test
 
-/**
- * Class that handles authentication w/ login credentials and retrieves user information.
- */
-class LoginDataSource {
+class BudgetyBudgetyUserTest {
+    @Test
+    fun compareUser_isCorrect(){
+        val user01 = BudgetyUser(1,"test1", byteArrayOf(1), byteArrayOf(2),0,0)
+        val user02 = BudgetyUser(2,"test2", byteArrayOf(2), byteArrayOf(3),4,0)
+        val user03 = BudgetyUser(1,"test1", byteArrayOf(1), byteArrayOf(2),0,0)
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
-        try {
-            // TODO: handle loggedInUser authentication
-            val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-            return Result.Success(fakeUser)
-        } catch (e: Throwable) {
-            return Result.Error(IOException("Error logging in", e))
-        }
+        assert(user01 != user02)
+        assert(user01 == user03)
     }
 
-    fun logout() {
-        // TODO: revoke authentication
-    }
+
 }
-

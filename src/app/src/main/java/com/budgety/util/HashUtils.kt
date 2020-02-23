@@ -15,11 +15,26 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data.model
+package com.budgety.util
 
-/**
- * Data class that captures user information for logged in users retrieved from LoginRepository
- */
-data class LoggedInUser(
-        val userId: String,
-        val displayName: String)
+import java.security.MessageDigest
+
+
+    /**
+     * Function returns SHA-512 string of source string.
+     */
+fun hashStringSha512(input: String): String {
+        val HEX_CHARS = "0123456789ABCDEF"
+        val bytes = MessageDigest
+                .getInstance("SHA-512")
+                .digest(input.toByteArray())
+        val result = StringBuilder(bytes.size * 2)
+
+        bytes.forEach {
+            val i = it.toInt()
+            result.append(HEX_CHARS[i shr 4 and 0x0f])
+            result.append(HEX_CHARS[i and 0x0f])
+        }
+
+        return result.toString()
+}

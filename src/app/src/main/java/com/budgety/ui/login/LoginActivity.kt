@@ -114,9 +114,10 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onBackPressed() {
-        moveTaskToBack(true)
-    }
+   override fun onBackPressed() {
+
+         moveTaskToBack(true)
+   }
 }
 
 /**

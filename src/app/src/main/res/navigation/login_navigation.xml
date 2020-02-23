@@ -26,7 +26,7 @@
         android:id="@+id/loginCreateFragment"
         android:name="com.budgety.ui.login.create.LoginCreateFragment"
         android:label="fragment_login_create"
-        tools:layout="@layout/fragment_login_create" >
+        tools:layout="@layout/fragment_login_create">
         <action
             android:id="@+id/action_loginCreateFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -38,6 +38,8 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_loginCreateFragment"
-            app:destination="@id/loginCreateFragment" />
+            app:destination="@id/loginCreateFragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@+id/loginFragment" />
     </fragment>
 </navigation>
