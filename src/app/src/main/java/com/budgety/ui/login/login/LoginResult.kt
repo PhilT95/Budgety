@@ -15,9 +15,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.ui.login
+package com.budgety.ui.login.login
+
+import androidx.lifecycle.LiveData
+import com.budgety.data.database.user.BudgetyUser
 
 /**
  * Authentication result : success (user details) or error message.
  */
-data class LoginResult(val success: LoggedInUserView? = null, val error: Int? = null)
+data class LoginResult(
+        val success: LiveData<BudgetyUser>? = null, val error: Int? = null)

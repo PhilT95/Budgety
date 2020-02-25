@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.ui.login
+package com.budgety.ui.login.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -26,12 +26,12 @@ import com.budgety.data.database.user.UserDBDao
  * ViewModel provider factory to instantiate LoginViewModel.
  * Required given LoginViewModel has a non-empty constructor
  */
-class LoginViewModelFactory(val dataSource : UserDBDao) : ViewModelProvider.Factory {
+class LoginViewModelFactory(private val dataSource : UserDBDao) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            return LoginViewModel(loginRepository = LoginRepository(dataSource = dataSource )) as T
+            return LoginViewModel(loginRepository = LoginRepository(dataSource = dataSource)) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

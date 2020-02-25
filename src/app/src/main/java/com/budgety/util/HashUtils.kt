@@ -17,24 +17,27 @@
 
 package com.budgety.util
 
+import android.util.Base64
 import java.security.MessageDigest
+import kotlin.random.Random
 
 
-    /**
+/**
      * Function returns SHA-512 string of source string.
      */
-fun hashStringSha512(input: String): String {
-        val HEX_CHARS = "0123456789ABCDEF"
-        val bytes = MessageDigest
-                .getInstance("SHA-512")
-                .digest(input.toByteArray())
-        val result = StringBuilder(bytes.size * 2)
+fun hashStringSha512(input: String, salt: ByteArray): ByteArray {
 
-        bytes.forEach {
-            val i = it.toInt()
-            result.append(HEX_CHARS[i shr 4 and 0x0f])
-            result.append(HEX_CHARS[i and 0x0f])
-        }
+    val bytes = MessageDigest.getInstance("SHA-512")
+    bytes.update(salt)
 
-        return result.toString()
+    return bytes.digest(input.toByteArray())
+
 }
+
+fun getNextSalt() : ByteArray{
+    var salt =  ByteArray(20)
+    Random.Default.nextBytes(salt)
+    return salt
+}
+
+

@@ -27,33 +27,37 @@ import kotlin.math.pow
         indices = [Index(value = ["user_name"], unique = true)])
 data class BudgetyUser(
         @PrimaryKey(autoGenerate = true)
-        val userID : Long,
+        val userID : Long = 0L,
 
         @ColumnInfo(name = "user_name")
         val userName: String,
 
-        @ColumnInfo(name = "user_password")
-        val userPassword: String,
+        @ColumnInfo(name = "user_password", typeAffinity = ColumnInfo.BLOB)
+        val userPassword: ByteArray,
+
+        @ColumnInfo(name = "user_salt", typeAffinity = ColumnInfo.BLOB)
+        val userSalt: ByteArray,
 
         @ColumnInfo(name = "user_image", typeAffinity = ColumnInfo.BLOB)
         val userImage: ByteArray,
 
         @ColumnInfo(name = "user_backup_setting", typeAffinity = ColumnInfo.INTEGER)
-        val userBackupSetting: Int,
+        val userBackupSetting: Int = 0,
 
         @ColumnInfo(name = "user_backup_next")
-        val userBackupNext: Long
+        val userBackupNext: Long = 0
 
 ){
         override fun equals(other: Any?): Boolean {
                 other as BudgetyUser
 
-                if(other?.javaClass == javaClass){
-                        if(userID == other.userID){
+                if(other.javaClass == javaClass){
+                        if(userID == other.userID || userName == other.userName){
                                 if(userImage.contentEquals(other.userImage) &&
-                                        userName == other.userName &&
+                                        userPassword.contentEquals(other.userPassword) &&
                                         userBackupSetting == other.userBackupSetting &&
-                                        userBackupNext == other.userBackupNext)
+                                        userBackupNext == other.userBackupNext &&
+                                        userSalt.contentEquals(other.userSalt))
                                 return true
                         }
                 }

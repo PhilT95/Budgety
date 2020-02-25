@@ -15,9 +15,20 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.ui.login
+package com.budgety.ui.login.create
 
-/**
- * Data validation state of the login form.
- */
-data class LoginFormState(val usernameError: Int? = null, val passwordError: Int? = null, val isDataValid: Boolean = false)
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.budgety.data.LoginRepository
+import com.budgety.data.database.user.UserDBDao
+
+class LoginCreateViewModelFactory(private val dataSource : UserDBDao) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(LoginCreateViewModel::class.java)) {
+            return LoginCreateViewModel(loginRepository = LoginRepository(dataSource = dataSource )) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}

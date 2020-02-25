@@ -23,6 +23,17 @@
             android:orientation="vertical"
             android:padding="@dimen/login_standard_margin">
 
+            <ImageView
+                android:id="@+id/account_picture"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="40dp"
+                android:contentDescription="@string/prompt_picture_profile_desc"
+                app:srcCompat="@drawable/ic_account_circle_grey"/>
+
 
             <EditText
                 android:id="@+id/username_create"
@@ -32,16 +43,6 @@
                 android:ems="10"
                 android:hint="@string/prompt_username_new"
                 android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/email_create"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/login_create_element_margin"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:hint="@string/prompt_email_new"
-                android:inputType="textEmailAddress" />
 
             <EditText
                 android:id="@+id/password_create"

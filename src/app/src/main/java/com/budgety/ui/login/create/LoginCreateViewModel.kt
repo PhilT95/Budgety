@@ -17,8 +17,37 @@
 
 package com.budgety.ui.login.create
 
+import android.graphics.Bitmap
+import android.media.Image
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.budgety.data.LoginRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
-class LoginCreateViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+
+    private val viewModelJob = Job()
+
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
+    private val _isSubmittable = MutableLiveData<Boolean>()
+    val isSubmittable : LiveData<Boolean> = _isSubmittable
+
+    private val _profilePicture = MutableLiveData<Bitmap>()
+    val profilePicture : LiveData<Bitmap> = _profilePicture
+
+
+
+
+
+    fun setImage(picture : Bitmap){
+        _profilePicture.value = picture
+    }
+
+
+
+
 }

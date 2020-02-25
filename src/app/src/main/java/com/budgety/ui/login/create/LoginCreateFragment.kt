@@ -17,17 +17,24 @@
 
 package com.budgety.ui.login.create
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.media.Image
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.media.MediaBrowserServiceCompat
 import androidx.navigation.fragment.findNavController
 
 import com.budgety.R
+import com.budgety.data.database.user.UserDB
 import com.budgety.databinding.FragmentLoginCreateBinding
 
 class LoginCreateFragment : Fragment() {
@@ -40,8 +47,20 @@ class LoginCreateFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentLoginCreateBinding.inflate(inflater)
-        viewModel = ViewModelProvider(this).get(LoginCreateViewModel::class.java)
+
+        val application = requireNotNull(this.activity).application
+
+        val userSource = UserDB.getInstance(application).userDBDao
+
+
+
+        viewModel = ViewModelProvider(this, LoginCreateViewModelFactory(userSource)).get(LoginCreateViewModel::class.java)
         binding.viewModel = viewModel
+
+
+        viewModel.profilePicture.observe(viewLifecycleOwner, Observer {
+            binding.accountPicture.setImageBitmap(it)
+        })
 
 
         binding.backLogin.setOnClickListener {
@@ -50,7 +69,24 @@ class LoginCreateFragment : Fragment() {
             )
         }
 
+        binding.accountPicture.setOnClickListener{
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {takePictureIntent ->
+                takePictureIntent.resolveActivity(application.packageManager).also {
+                    startActivityForResult(takePictureIntent, 1)
+                }
+            }
+
+        }
+
         return binding.root
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == 1){
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            viewModel.setImage(imageBitmap)
+        }
     }
 
 

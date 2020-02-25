@@ -21,6 +21,7 @@ import androidx.lifecycle.LiveData
 import com.budgety.data.database.user.BudgetyUser
 import com.budgety.data.database.user.UserDBDao
 import com.budgety.data.model.LoggedInUser
+import com.budgety.util.getNextSalt
 import com.budgety.util.hashStringSha512
 import java.io.IOException
 
@@ -72,12 +73,30 @@ class LoginRepository(val dataSource: UserDBDao) {
 
         try{
             val user = dataSource.getUser(username)
-            if (hashStringSha512(password) != user.value?.userPassword) {
-                return Result.Error("Wrong password.")
+            val passwordDB = user.value?.userPassword
+            val saltDB = user.value?.userSalt
+            if(user.value == null){
+                return Result.ErrorUserNotFound("User $username not found.")
+            }
+            if (!hashStringSha512(password, saltDB!!).contentEquals(passwordDB!!)) {
+                return Result.ErrorWrongPassword("Wrong password.")
             }
             return Result.Success(user)
         } catch (e: Throwable) {
-            return Result.ErrorException(IOException("Error loggin in", e))
+            return Result.LoginException(IOException("Error logging in", e))
         }
+    }
+
+    fun createLogin(username: String, password: String, image: ByteArray) : Result<LiveData<BudgetyUser>> {
+        val salt = getNextSalt()
+        val user = BudgetyUser(userName = username, userPassword = hashStringSha512(password, salt), userImage = image, userSalt = salt)
+        return try{
+            dataSource.insert(user)
+            login(username, password)
+        }catch (e: Throwable) {
+            Result.CreateException(IOException("Error creating account", e))
+        }
+
+
     }
 }
