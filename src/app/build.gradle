@@ -120,4 +120,7 @@ dependencies {
     //SQL Cipher
     implementation "net.zetetic:android-database-sqlcipher:$version_sqlcipher"
     implementation "androidx.sqlite:sqlite:$version_sqlite"
+
+    //For Circular ImageView
+    implementation "com.android.support:cardview-v7:28.0.0"
 }

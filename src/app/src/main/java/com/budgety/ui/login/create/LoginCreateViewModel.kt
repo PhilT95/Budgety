@@ -19,6 +19,7 @@ package com.budgety.ui.login.create
 
 import android.graphics.Bitmap
 import android.media.Image
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,15 +37,15 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     private val _isSubmittable = MutableLiveData<Boolean>()
     val isSubmittable : LiveData<Boolean> = _isSubmittable
 
-    private val _profilePicture = MutableLiveData<Bitmap>()
-    val profilePicture : LiveData<Bitmap> = _profilePicture
+    private val _profilePicture = MutableLiveData<Uri>()
+    val profilePicture : LiveData<Uri> = _profilePicture
 
 
 
 
 
-    fun setImage(picture : Bitmap){
-        _profilePicture.value = picture
+    fun setImage(uri: Uri){
+        _profilePicture.value = uri
     }
 
 

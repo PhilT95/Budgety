@@ -23,16 +23,26 @@
             android:orientation="vertical"
             android:padding="@dimen/login_standard_margin">
 
-            <ImageView
-                android:id="@+id/account_picture"
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardview1"
                 android:layout_width="128dp"
                 android:layout_height="128dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="40dp"
-                android:contentDescription="@string/prompt_picture_profile_desc"
-                app:srcCompat="@drawable/ic_account_circle_grey"/>
+                android:elevation="12dp"
+                android:shape="ring"
+                android:thicknessRatio="1.9"
+                app:cardCornerRadius="60dp">
+
+                <ImageView
+                    android:id="@+id/account_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/prompt_picture_profile_desc"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_account_circle_grey" />
+            </com.google.android.material.card.MaterialCardView>
+
+
 
 
             <EditText
