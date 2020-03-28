@@ -17,10 +17,12 @@
 
 package com.budgety.data
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import com.budgety.data.database.user.BudgetyUser
 import com.budgety.data.database.user.UserDBDao
 import com.budgety.data.model.LoggedInUser
+import com.budgety.util.BudgetyErrors
 import com.budgety.util.getNextSalt
 import com.budgety.util.hashStringSha512
 import java.io.IOException
@@ -45,15 +47,11 @@ class LoginRepository(val dataSource: UserDBDao) {
         user = null
     }
 
-  /*  fun logout() {
-        user = null
-        dataSource.logout()
-    }*/
 
-    fun login(username: String, password: String): Result<LiveData<BudgetyUser>> {
-        // handle login
 
-        val result = getLoginResult(username, password)
+    fun login(username: String): Result<LiveData<BudgetyUser>> {
+
+        val result = getLoginResult(username)
 
 
         if (result is Result.Success) {
@@ -65,38 +63,32 @@ class LoginRepository(val dataSource: UserDBDao) {
 
     private fun setLoggedInUser(user: LiveData<BudgetyUser>) {
         this.user = user
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
+
     }
 
-    private fun getLoginResult(username: String, password: String): Result<LiveData<BudgetyUser>> {
 
-        try{
-            val user = dataSource.getUser(username)
-            val passwordDB = user.value?.userPassword
-            val saltDB = user.value?.userSalt
-            if(user.value == null){
-                return Result.ErrorUserNotFound("User $username not found.")
-            }
-            if (!hashStringSha512(password, saltDB!!).contentEquals(passwordDB!!)) {
-                return Result.ErrorWrongPassword("Wrong password.")
-            }
-            return Result.Success(user)
-        } catch (e: Throwable) {
-            return Result.LoginException(IOException("Error logging in", e))
-        }
-    }
 
-    fun createLogin(username: String, password: String, image: ByteArray) : Result<LiveData<BudgetyUser>> {
-        val salt = getNextSalt()
-        val user = BudgetyUser(userName = username, userPassword = hashStringSha512(password, salt), userImage = image, userSalt = salt)
+
+
+    private fun getLoginResult(username: String): Result<LiveData<BudgetyUser>> {
+
         return try{
-            dataSource.insert(user)
-            login(username, password)
-        }catch (e: Throwable) {
-            Result.CreateException(IOException("Error creating account", e))
+            val user = dataSource.getUser(username)
+            Result.Success(user)
+        } catch (e: Throwable) {
+            Result.Error(BudgetyErrors.ERROR_LOGIN_USER_EXCEPTION.code)
         }
+    }
 
+
+    fun createUser(username: String, password: ByteArray, salt : ByteArray, imageUri: String?) : Int {
+       val user = BudgetyUser(userName = username, userPassword = password, userSalt = salt, userImage = imageUri)
+        return try {
+            dataSource.insert(user)
+            BudgetyErrors.CREATE_SUCCESS.code
+        } catch (e : SQLiteConstraintException) {
+            BudgetyErrors.ERROR_CREATE_USER_EXISTS_ALREADY.code
+        }
 
     }
 }

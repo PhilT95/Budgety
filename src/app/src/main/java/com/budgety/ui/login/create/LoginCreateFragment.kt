@@ -18,7 +18,9 @@
 package com.budgety.ui.login.create
 
 import android.app.Activity.RESULT_OK
+import android.app.Dialog
 import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.Image
@@ -46,13 +48,14 @@ import androidx.navigation.fragment.findNavController
 import com.budgety.R
 import com.budgety.data.database.user.UserDB
 import com.budgety.databinding.FragmentLoginCreateBinding
+import com.budgety.util.BudgetyErrors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LoginCreateFragment : Fragment() {
+class LoginCreateFragment : DialogFragment() {
 
 
 
@@ -86,6 +89,12 @@ class LoginCreateFragment : Fragment() {
             binding.accountPicture.setImageURI(viewModel.profilePicture.value)
         })
 
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+            if(it != BudgetyErrors.CREATE_SUCCESS.code){
+                displayErrorMessage(it)
+            }
+        })
+
 
         binding.backLogin.setOnClickListener {
             findNavController().navigate(
@@ -94,10 +103,36 @@ class LoginCreateFragment : Fragment() {
         }
 
         binding.accountPicture.setOnClickListener{
-            dispatchTakePictureIntent()
+            selectProfilePicture()
+        }
+
+        binding.accountCreate.setOnClickListener {
+            val password = binding.passwordCreate.text.toString()
+            val passwordCheck = binding.passwordCreateCheck.text.toString()
+            val username = binding.usernameCreate.text.toString()
+
+            if(password == passwordCheck){
+                viewModel.createUser(username, password)
+            }
         }
 
         return binding.root
+    }
+
+    private fun selectProfilePicture() {
+
+        val items = arrayOf(resources.getString(R.string.dialog_choosePicture_camera), resources.getString(R.string.dialog_choosePicture_gallery))
+
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.dialog_choosePicture_title)
+                .setItems(items) {_, which ->
+                    when(which){
+                        0 -> dispatchTakePictureIntent()
+                        1 -> dispatchPickPictureIntent()
+                    }
+                }
+                .show()
+
     }
 
 
@@ -105,6 +140,20 @@ class LoginCreateFragment : Fragment() {
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             viewModel.setImage(currentPhotoPath.toUri())
         }
+        if(requestCode == REQUST_IMAGE_PICKER && resultCode == RESULT_OK){
+            if(data != null) viewModel.setImage(data.data!!)
+
+        }
+    }
+
+    private fun displayErrorMessage(messageID: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.error_message_title))
+                .setMessage(resources.getString(BudgetyErrors.fromValue(messageID).message))
+                .setPositiveButton(R.string.button_text_ok) { _, _ ->
+
+                }
+                .show()
     }
 
     private fun dispatchTakePictureIntent() {
@@ -130,6 +179,15 @@ class LoginCreateFragment : Fragment() {
         }
     }
 
+    private fun dispatchPickPictureIntent() {
+        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
+        galleryIntent.type = "image/*"
+
+        startActivityForResult(galleryIntent, REQUST_IMAGE_PICKER)
+
+
+    }
+
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
@@ -142,6 +200,11 @@ class LoginCreateFragment : Fragment() {
         ).apply {
             currentPhotoPath = absolutePath
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return MaterialAlertDialogBuilder(requireContext())
+                .create()
     }
 
 

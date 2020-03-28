@@ -15,23 +15,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data
+package com.budgety.util
+
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+fun passwordIsValid(password: String): Boolean{
+    val letter = Pattern.compile("[a-zA-Z]")
+    val digit = Pattern.compile("[0-9]")
 
 
-/**
- * A generic class that holds a value with its loading status.
- * @param <T>
- */
-sealed class Result<out T : Any> {
+    val hasLetter = letter.matcher(password)
+    val hasDigit = digit.matcher(password)
 
-    data class Success<out T : Any>(val data: T) : Result<T>()
-    data class Error(val error: Int) : Result<Nothing>()
-
-    override fun toString(): String {
-        return when (this) {
-            is Success<*> -> "Success[data=$data]"
-
-            is Error -> "Error[error=$error]"
-        }
-    }
+    return hasLetter.find() && hasDigit.find()
 }
+

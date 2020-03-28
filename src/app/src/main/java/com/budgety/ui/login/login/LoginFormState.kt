@@ -15,23 +15,6 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data
+package com.budgety.ui.login.login
 
-
-/**
- * A generic class that holds a value with its loading status.
- * @param <T>
- */
-sealed class Result<out T : Any> {
-
-    data class Success<out T : Any>(val data: T) : Result<T>()
-    data class Error(val error: Int) : Result<Nothing>()
-
-    override fun toString(): String {
-        return when (this) {
-            is Success<*> -> "Success[data=$data]"
-
-            is Error -> "Error[error=$error]"
-        }
-    }
-}
+data class LoginFormState(val usernameError: Int? = null, val passwordError: Int? = null, val isDataValid: Boolean = false)

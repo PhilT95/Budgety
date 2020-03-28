@@ -39,7 +39,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     val loginResult: LiveData<LoginResult> = _loginResult
 
 
-    fun login(username: String, password: String) {
+  /*  fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
 
         if(validateLogin(username, password)){
@@ -59,7 +59,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
             _loginResult.value = LoginResult(error = 3)
         }
 
-    }
+    }*/
 
 
     private fun validateLogin(username: String, password: String) : Boolean {

@@ -24,21 +24,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.budgety.data.LoginRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.budgety.util.BudgetyErrors
+import com.budgety.util.getNextSalt
+import com.budgety.util.hashStringSha512
+import com.budgety.util.passwordIsValid
+import kotlinx.coroutines.*
 
 class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
     private val viewModelJob = Job()
 
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val uiScope = CoroutineScope(Dispatchers.Main
+            + viewModelJob)
 
     private val _isSubmittable = MutableLiveData<Boolean>()
     val isSubmittable : LiveData<Boolean> = _isSubmittable
 
     private val _profilePicture = MutableLiveData<Uri>()
     val profilePicture : LiveData<Uri> = _profilePicture
+
+    private val _errorMessage = MutableLiveData<Int>()
+    val errorMessage : LiveData<Int> = _errorMessage
+
+    var submittedPassword : String? = null
+
 
 
 
@@ -47,6 +56,51 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     fun setImage(uri: Uri){
         _profilePicture.value = uri
     }
+
+
+    fun createUser(username: String, password: String){
+        uiScope.async {
+            doCreateUser(username, password)
+        }
+    }
+
+    private suspend fun doCreateUser(username: String, password: String){
+
+        submittedPassword = password
+        val salt = getNextSalt()
+        val saltedPassword = hashStringSha512(password, salt)
+        var resultCode = -1
+
+        if(password.length>5){
+            if(passwordIsValid(password)){
+                if(!password.contains(username)){
+                        withContext(Dispatchers.IO){
+                            resultCode = loginRepository.createUser(username, saltedPassword, salt, profilePicture.value.toString())
+                        }
+                }
+                else{
+                    resultCode = BudgetyErrors.ERROR_CREATE_USERNAME_IN_PASSWORD.code
+                }
+            }
+            else{
+                resultCode = BudgetyErrors.ERROR_CREATE_PASSWORD_NOT_ALLOWED.code
+            }
+        }
+        else{
+            resultCode = BudgetyErrors.ERROR_CREATE_PASSWORD_TO_SHORT.code
+        }
+
+       _errorMessage.value = resultCode
+
+
+
+
+
+    }
+
+
+
+
 
 
 
