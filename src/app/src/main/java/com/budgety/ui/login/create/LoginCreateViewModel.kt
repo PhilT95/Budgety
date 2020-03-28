@@ -37,8 +37,9 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     private val uiScope = CoroutineScope(Dispatchers.Main
             + viewModelJob)
 
-    private val _isSubmittable = MutableLiveData<Boolean>()
-    val isSubmittable : LiveData<Boolean> = _isSubmittable
+    private val _isLoggedIn = MutableLiveData<Boolean>()
+    val isLoggedIn : LiveData<Boolean> = _isLoggedIn
+
 
     private val _profilePicture = MutableLiveData<Uri>()
     val profilePicture : LiveData<Uri> = _profilePicture
@@ -46,7 +47,12 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     private val _errorMessage = MutableLiveData<Int>()
     val errorMessage : LiveData<Int> = _errorMessage
 
+    var submittedUserName : String? = null
     var submittedPassword : String? = null
+
+    init {
+        deleteAllUsers()
+    }
 
 
 
@@ -64,9 +70,17 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
         }
     }
 
+    fun login() {
+        uiScope.async {
+            doLogin()
+        }
+    }
+
+
     private suspend fun doCreateUser(username: String, password: String){
 
         submittedPassword = password
+        submittedUserName = username
         val salt = getNextSalt()
         val saltedPassword = hashStringSha512(password, salt)
         var resultCode = -1
@@ -91,12 +105,31 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
         }
 
        _errorMessage.value = resultCode
+    }
 
+    private suspend fun doLogin() {
+        var resultCode = -1
+        withContext(Dispatchers.IO){
+            resultCode = loginRepository.login(submittedUserName!!)
+        }
+        if(resultCode == BudgetyErrors.LOGIN_SUCCESS.code){
 
-
-
+            _isLoggedIn.value = true
+        }
+        else _errorMessage.value = resultCode
 
     }
+
+    private fun deleteAllUsers(){
+        uiScope.launch {
+            withContext(Dispatchers.IO){
+                loginRepository.deleteAllUsers()
+            }
+        }
+
+    }
+
+
 
 
 

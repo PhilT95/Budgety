@@ -35,6 +35,8 @@ interface UserDBDao {
     @Query("SELECT * FROM users WHERE user_name = :username")
     fun getUser(username: String) : LiveData<BudgetyUser>
 
+    @Query("DELETE FROM users")
+    fun deleteAllUsers()
 
 
 }

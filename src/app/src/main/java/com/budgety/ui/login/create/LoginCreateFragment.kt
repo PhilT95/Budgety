@@ -80,7 +80,6 @@ class LoginCreateFragment : DialogFragment() {
         val userSource = UserDB.getInstance(application).userDBDao
 
 
-
         viewModel = ViewModelProvider(this, LoginCreateViewModelFactory(userSource)).get(LoginCreateViewModel::class.java)
         binding.viewModel = viewModel
 
@@ -92,7 +91,13 @@ class LoginCreateFragment : DialogFragment() {
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             if(it != BudgetyErrors.CREATE_SUCCESS.code){
                 displayErrorMessage(it)
+            }else{
+                viewModel.login()
             }
+        })
+
+        viewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
+            if(it) sendLoginData()
         })
 
 
@@ -117,6 +122,15 @@ class LoginCreateFragment : DialogFragment() {
         }
 
         return binding.root
+    }
+
+
+    private fun sendLoginData() {
+        val intent = Intent()
+        intent.putExtra("username", viewModel.submittedUserName)
+        intent.putExtra("password", viewModel.submittedPassword)
+        requireActivity().setResult(1,intent)
+        requireActivity().finish()
     }
 
     private fun selectProfilePicture() {

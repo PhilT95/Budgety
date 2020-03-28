@@ -49,16 +49,17 @@ class LoginRepository(val dataSource: UserDBDao) {
 
 
 
-    fun login(username: String): Result<LiveData<BudgetyUser>> {
+    fun login(username: String): Int {
 
         val result = getLoginResult(username)
 
 
         if (result is Result.Success) {
             setLoggedInUser(result.data)
+            return BudgetyErrors.LOGIN_SUCCESS.code
         }
 
-        return result
+        return BudgetyErrors.ERROR_LOGIN_USER_EXCEPTION.code
     }
 
     private fun setLoggedInUser(user: LiveData<BudgetyUser>) {
@@ -90,5 +91,9 @@ class LoginRepository(val dataSource: UserDBDao) {
             BudgetyErrors.ERROR_CREATE_USER_EXISTS_ALREADY.code
         }
 
+    }
+
+    fun deleteAllUsers(){
+        dataSource.deleteAllUsers()
     }
 }
