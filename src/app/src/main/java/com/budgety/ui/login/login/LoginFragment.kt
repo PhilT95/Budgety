@@ -18,11 +18,14 @@
 package com.budgety.ui.login.login
 
 import android.app.Activity
+import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,9 +33,11 @@ import androidx.navigation.fragment.findNavController
 import com.budgety.R
 import com.budgety.data.database.user.UserDB
 import com.budgety.databinding.FragmentLoginBinding
+import com.budgety.util.BudgetyErrors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_login.*
 
-class LoginFragment : Fragment() {
+class LoginFragment : DialogFragment() {
 
     companion object {
         fun newInstance() = LoginFragment()
@@ -54,40 +59,41 @@ class LoginFragment : Fragment() {
         viewModel = ViewModelProvider(this, LoginViewModelFactory(userSource)).get(LoginViewModel::class.java)
         binding.viewModel = viewModel
 
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+            if(it == BudgetyErrors.LOGIN_SUCCESS.code){
 
+            }else{
+                loading.visibility = View.GONE
+                displayErrorMessage(it)
+            }
+        })
 
-        viewModel.loginResult.observe(viewLifecycleOwner, Observer {
-            val loginResult = it ?: return@Observer
-
-            binding.loading.visibility = View.GONE
-
-
-
-
-            if(loginResult.error != null){
-                when(loginResult.error){
-                    0 -> showLoginFailed(getString(R.string.login_failed_no_user))
-                    1 -> showLoginFailed(getString(R.string.login_failed_wrong_password))
-                    2 -> showLoginFailed(getString(R.string.login_failed))
-                    3 -> showLoginFailed(getString(R.string.login_failed_user_password_not_valid))
+        viewModel.userIsRetrieved.observe(viewLifecycleOwner, Observer {
+            viewModel.loginRepository.user?.observe(viewLifecycleOwner, Observer {
+                if (it == null) {
+                    loading.visibility = View.GONE
+                    displayErrorMessage(BudgetyErrors.ERROR_LOGIN_USER_NOT_FOUND.code)
+                }else{
+                    viewModel.validateLogin(it.userPassword, it.userSalt)
                 }
 
-            }
-            if(loginResult.success != null){
-                //User account and decrypted database should be send here
-                activity!!.setResult(Activity.RESULT_OK)
-                activity!!.finish()
-            }
-
-
-
+            })
         })
+
+
+        viewModel.userIsValidated.observe(viewLifecycleOwner, Observer {
+            if(it) sendLoginData()
+            else displayErrorMessage(BudgetyErrors.ERROR_LOGIN_USER_WRONG_PASSWORD.code)
+        })
+
 
         binding.login.setOnClickListener {
             loading.visibility = View.VISIBLE
-            //viewModel.login(binding.username.text.toString(),binding.password.text.toString())
+            viewModel.login(binding.username.text.toString(),binding.password.text.toString())
 
         }
+
+
 
 
         binding.accountCreate.setOnClickListener {
@@ -103,6 +109,29 @@ class LoginFragment : Fragment() {
 
     private fun showLoginFailed(error: String){
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun displayErrorMessage(messageID: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.error_message_title))
+                .setMessage(resources.getString(BudgetyErrors.fromValue(messageID).message))
+                .setPositiveButton(R.string.button_text_ok) { _, _ ->
+
+                }
+                .show()
+    }
+
+    private fun sendLoginData() {
+        val intent = Intent()
+        intent.putExtra("username", viewModel.submittedUserName)
+        intent.putExtra("password", viewModel.submittedPassword)
+        requireActivity().setResult(1,intent)
+        requireActivity().finish()
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return MaterialAlertDialogBuilder(requireContext())
+                .create()
     }
 
 

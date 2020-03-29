@@ -19,6 +19,8 @@ package com.budgety.data
 
 import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.map
 import com.budgety.data.database.user.BudgetyUser
 import com.budgety.data.database.user.UserDBDao
 import com.budgety.data.model.LoggedInUser
@@ -35,17 +37,25 @@ import java.io.IOException
 class LoginRepository(val dataSource: UserDBDao) {
 
     // in-memory cache of the loggedInUser object
+
+
+
+
+
     var user: LiveData<BudgetyUser>? = null
         private set
 
     val isLoggedIn: Boolean
         get() = user != null
 
+
+
     init {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
         user = null
     }
+
 
 
 
@@ -64,7 +74,6 @@ class LoginRepository(val dataSource: UserDBDao) {
 
     private fun setLoggedInUser(user: LiveData<BudgetyUser>) {
         this.user = user
-
     }
 
 

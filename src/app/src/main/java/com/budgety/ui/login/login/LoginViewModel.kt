@@ -22,12 +22,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import com.budgety.data.LoginRepository
 import com.budgety.data.Result
+import com.budgety.data.database.user.BudgetyUser
+import com.budgety.util.BudgetyErrors
+import com.budgety.util.getNextSalt
+import com.budgety.util.hashStringSha512
+import com.budgety.util.passwordIsValid
 
 import kotlinx.coroutines.*
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel(val loginRepository: LoginRepository) : ViewModel() {
 
 
     private val viewModelJob = Job()
@@ -35,67 +42,69 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 
-    private val _loginResult = MutableLiveData<LoginResult>()
-    val loginResult: LiveData<LoginResult> = _loginResult
 
 
-  /*  fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
 
-        if(validateLogin(username, password)){
-            uiScope.launch {
-                withContext(Dispatchers.IO) {
-                    when(val result = loginRepository.login(username,password)) {
-                        is Result.Success -> _loginResult.postValue(LoginResult(success = result.data))
-                        is Result.ErrorUserNotFound -> _loginResult.postValue(LoginResult(error = 0))
-                        is Result.ErrorWrongPassword -> _loginResult.postValue(LoginResult(error = 1))
-                        is Result.LoginException -> _loginResult.postValue(LoginResult(error = 2))
-                    }
+    private val _userIsRetrieved = MutableLiveData<Boolean>()
+    val userIsRetrieved : LiveData<Boolean> = _userIsRetrieved
 
-                }
+    private val _userIsValidated = MutableLiveData<Boolean>()
+    val userIsValidated : LiveData<Boolean> = _userIsValidated
+
+    private val _errorMessage = MutableLiveData<Int>()
+    val errorMessage : LiveData<Int> = _errorMessage
+
+    var submittedUserName : String? = null
+    var submittedPassword : String? = null
+
+
+
+
+
+
+
+    fun login(username: String, password: String) {
+        submittedUserName = username
+        submittedPassword = password
+
+
+
+        uiScope.async {
+            getUser()
+        }
+    }
+
+    fun validateLogin(userPassword: ByteArray, userSalt : ByteArray){
+        if (loginRepository.user != null){
+            val submittedPasswordHash = hashStringSha512(submittedPassword!!, userSalt)
+            if(submittedPasswordHash.contentEquals(userPassword)){
+                _userIsValidated.value = true
+            }else{
+                _errorMessage.value = BudgetyErrors.ERROR_LOGIN_USER_WRONG_PASSWORD.code
             }
+        }else{
+            _errorMessage.value = BudgetyErrors.ERROR_LOGIN_USER_NOT_FOUND.code
         }
-        else{
-            _loginResult.value = LoginResult(error = 3)
+
+
+
+    }
+
+    private suspend fun getUser() {
+        var resultCode = -1
+
+        withContext(Dispatchers.IO){
+            resultCode = loginRepository.login(submittedUserName!!)
         }
-
-    }*/
-
-
-    private fun validateLogin(username: String, password: String) : Boolean {
-        if(checkUsername(username) && checkPassword(password)){
-            return true
+        if(resultCode == BudgetyErrors.LOGIN_SUCCESS.code){
+            _userIsRetrieved.value = true
         }
-        return false
+        else _errorMessage.value = resultCode
+
     }
 
 
 
-
-    // A placeholder username validation check
-    private fun isUserNameValid(username: String): Boolean {
-        return if (username.contains('@')) {
-            Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        } else {
-            username.isNotBlank()
-        }
-    }
-
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5
-    }
-
-    private fun checkUsername(username: String) : Boolean{
-        if(username.isEmpty() || username == "") return false
-
-        return true
-    }
-
-    private fun checkPassword(password: String): Boolean{
-        if(password.length < 6) return false
-        return true
-    }
 
 
 
