@@ -34,7 +34,7 @@ import com.budgety.util.passwordIsValid
 
 import kotlinx.coroutines.*
 
-class LoginViewModel(val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
 
     private val viewModelJob = Job()
@@ -44,6 +44,9 @@ class LoginViewModel(val loginRepository: LoginRepository) : ViewModel() {
 
 
 
+
+    // Needed so the repository can be private.
+    var user : LiveData<BudgetyUser>? = null
 
     private val _userIsRetrieved = MutableLiveData<Boolean>()
     val userIsRetrieved : LiveData<Boolean> = _userIsRetrieved
@@ -58,11 +61,12 @@ class LoginViewModel(val loginRepository: LoginRepository) : ViewModel() {
     var submittedPassword : String? = null
 
 
-
-
-
-
-
+    /**
+     * Saves the submitted login for further processing and loads user from database through the repository
+     * in an async task via Coroutine.
+     * @param username Name of the user to be logged in
+     * @param password Submitted password for the provided user.
+     */
     fun login(username: String, password: String) {
         submittedUserName = username
         submittedPassword = password
@@ -74,6 +78,14 @@ class LoginViewModel(val loginRepository: LoginRepository) : ViewModel() {
         }
     }
 
+
+    /**
+     * Validates the submitted values saved in the viewModel against the provided values retrieved from the saved user.
+     * The submitted password will be hashed and salted and the byte arrays are then compared to each other.
+     * If no error occurs, the validated Flag will be set to true, else the error message is updated.
+     * @param userPassword Hashed Password of the user saved in the database
+     * @param userSalt Salt of the of the user saved in the database
+     */
     fun validateLogin(userPassword: ByteArray, userSalt : ByteArray){
         if (loginRepository.user != null){
             val submittedPasswordHash = hashStringSha512(submittedPassword!!, userSalt)
@@ -90,6 +102,12 @@ class LoginViewModel(val loginRepository: LoginRepository) : ViewModel() {
 
     }
 
+
+    /**
+     * Executes the login function of the repository.
+     * If an error occurs, the error code will be written to the LiveData object and an error message can be displayed.
+     * If no error occurs, the user is updated with the user of the loginRepository.
+     */
     private suspend fun getUser() {
         var resultCode = -1
 
@@ -97,6 +115,7 @@ class LoginViewModel(val loginRepository: LoginRepository) : ViewModel() {
             resultCode = loginRepository.login(submittedUserName!!)
         }
         if(resultCode == BudgetyErrors.LOGIN_SUCCESS.code){
+            user= loginRepository.user
             _userIsRetrieved.value = true
         }
         else _errorMessage.value = resultCode

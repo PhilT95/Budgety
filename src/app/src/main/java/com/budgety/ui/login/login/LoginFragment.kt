@@ -59,6 +59,11 @@ class LoginFragment : DialogFragment() {
         viewModel = ViewModelProvider(this, LoginViewModelFactory(userSource)).get(LoginViewModel::class.java)
         binding.viewModel = viewModel
 
+
+        /**
+         * Implements the Observer for the ErrorMessage code
+         * and displays a message if an error is registered.
+         */
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             if(it == BudgetyErrors.LOGIN_SUCCESS.code){
 
@@ -68,8 +73,15 @@ class LoginFragment : DialogFragment() {
             }
         })
 
+
+        /**
+         * Is executed when user is retrieved from the repository.
+         * Implements an Observer on the LiveData<BudgetyUser> from the ViewModel that contains the result from the repository
+         * and checks if an actual user exists. If it exists, the validation of the submitted password against the hashed password
+         * is triggered.
+         */
         viewModel.userIsRetrieved.observe(viewLifecycleOwner, Observer {
-            viewModel.loginRepository.user?.observe(viewLifecycleOwner, Observer {
+            viewModel.user?.observe(viewLifecycleOwner, Observer {
                 if (it == null) {
                     loading.visibility = View.GONE
                     displayErrorMessage(BudgetyErrors.ERROR_LOGIN_USER_NOT_FOUND.code)
@@ -81,20 +93,25 @@ class LoginFragment : DialogFragment() {
         })
 
 
+        /**
+         * Observers whether the validation of the user was successful or not. If it was successful,
+         * the submitted Login will be send to the main activity. If the submitted password does not match with the
+         * stored one, then an error message is displayed.
+         */
         viewModel.userIsValidated.observe(viewLifecycleOwner, Observer {
             if(it) sendLoginData()
             else displayErrorMessage(BudgetyErrors.ERROR_LOGIN_USER_WRONG_PASSWORD.code)
         })
 
 
+        /**
+         * Starts Login procedure. The rest of the login algorithm is triggered by Observers.
+         */
         binding.login.setOnClickListener {
             loading.visibility = View.VISIBLE
             viewModel.login(binding.username.text.toString(),binding.password.text.toString())
 
         }
-
-
-
 
         binding.accountCreate.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToLoginCreateFragment()
@@ -102,15 +119,12 @@ class LoginFragment : DialogFragment() {
         }
 
         return binding.root
-
-
-
     }
 
-    private fun showLoginFailed(error: String){
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
+    /**
+     * Displays an error message with the provided error code.
+     * @param messageID Error code from BudgetyErrors
+     */
     private fun displayErrorMessage(messageID: Int) {
         MaterialAlertDialogBuilder(requireContext())
                 .setTitle(resources.getString(R.string.error_message_title))
@@ -121,6 +135,10 @@ class LoginFragment : DialogFragment() {
                 .show()
     }
 
+
+    /**
+     * Creates an Intent that gets send to the main activity containing the submitted login values.     *
+     */
     private fun sendLoginData() {
         val intent = Intent()
         intent.putExtra("username", viewModel.submittedUserName)
@@ -129,6 +147,10 @@ class LoginFragment : DialogFragment() {
         requireActivity().finish()
     }
 
+
+    /**
+     * Enables Dialogs to survive configuration changes.
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireContext())
                 .create()
