@@ -17,6 +17,7 @@
 
 package com.budgety.ui.login.create
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.ContentValues
@@ -84,10 +85,17 @@ class LoginCreateFragment : DialogFragment() {
         binding.viewModel = viewModel
 
 
+        /**
+         * Initiates update of the image view.
+         */
         viewModel.profilePicture.observe(viewLifecycleOwner, Observer {
             binding.accountPicture.setImageURI(viewModel.profilePicture.value)
         })
 
+        /**
+         * Implements the Observer for the ErrorMessage code
+         * and displays a message if an error is registered.
+         */
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             if(it != BudgetyErrors.CREATE_SUCCESS.code){
                 displayErrorMessage(it)
@@ -96,6 +104,10 @@ class LoginCreateFragment : DialogFragment() {
             }
         })
 
+
+        /**
+         * Initiates sending for the login data to the main activity.
+         */
         viewModel.isLoggedIn.observe(viewLifecycleOwner, Observer {
             if(it) sendLoginData()
         })
@@ -107,10 +119,17 @@ class LoginCreateFragment : DialogFragment() {
             )
         }
 
+
+        /**
+         * Initiates the selection or creation of an image
+         */
         binding.accountPicture.setOnClickListener{
             selectProfilePicture()
         }
 
+        /**
+         * Initiates account creation process.
+         */
         binding.accountCreate.setOnClickListener {
             val password = binding.passwordCreate.text.toString()
             val passwordCheck = binding.passwordCreateCheck.text.toString()
@@ -129,10 +148,16 @@ class LoginCreateFragment : DialogFragment() {
         val intent = Intent()
         intent.putExtra("username", viewModel.submittedUserName)
         intent.putExtra("password", viewModel.submittedPassword)
-        requireActivity().setResult(1,intent)
+        requireActivity().setResult(RESULT_OK,intent)
         requireActivity().finish()
     }
 
+
+    /**
+     * Creates custom Dialog for selecting the image source.
+     * Here the user can decide between the given items. Default items are Camera and Gallery.
+     * Depending on the selected Item (they are in Order), the corresponding Intent is dispatched.
+     */
     private fun selectProfilePicture() {
 
         val items = arrayOf(resources.getString(R.string.dialog_choosePicture_camera), resources.getString(R.string.dialog_choosePicture_gallery))
@@ -150,6 +175,10 @@ class LoginCreateFragment : DialogFragment() {
     }
 
 
+    /**
+     * Reacts to the Result from the dispatched intents to get an image.
+     * Saves the retrieved uri to the view model.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             viewModel.setImage(currentPhotoPath.toUri())
@@ -159,6 +188,7 @@ class LoginCreateFragment : DialogFragment() {
 
         }
     }
+
 
     private fun displayErrorMessage(messageID: Int) {
         MaterialAlertDialogBuilder(requireContext())
@@ -170,6 +200,9 @@ class LoginCreateFragment : DialogFragment() {
                 .show()
     }
 
+    /**
+     * Creates an Intent to the devices Camera and, if successful, returns the uri.
+     */
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {takePictureIntent ->
             takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
@@ -193,6 +226,9 @@ class LoginCreateFragment : DialogFragment() {
         }
     }
 
+    /**
+     * Creates an Intent to the Gallery and, if successful, returns the uri of an image.
+     */
     private fun dispatchPickPictureIntent() {
         val galleryIntent = Intent(Intent.ACTION_GET_CONTENT)
         galleryIntent.type = "image/*"
@@ -203,6 +239,10 @@ class LoginCreateFragment : DialogFragment() {
     }
 
 
+    /**
+     * Creates an empty file with a unique name to which the image from the camera intent can be saved to.
+     * The value is stored in an local variable of this class.
+     */
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())

@@ -18,6 +18,7 @@
 package com.budgety.ui.login.login
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -109,7 +110,7 @@ class LoginFragment : DialogFragment() {
          */
         binding.login.setOnClickListener {
             loading.visibility = View.VISIBLE
-            viewModel.login(binding.username.text.toString(),binding.password.text.toString())
+            viewModel.login(binding.loginUser.text.toString(),binding.password.text.toString())
 
         }
 
@@ -143,7 +144,7 @@ class LoginFragment : DialogFragment() {
         val intent = Intent()
         intent.putExtra("username", viewModel.submittedUserName)
         intent.putExtra("password", viewModel.submittedPassword)
-        requireActivity().setResult(1,intent)
+        requireActivity().setResult(RESULT_OK,intent)
         requireActivity().finish()
     }
 

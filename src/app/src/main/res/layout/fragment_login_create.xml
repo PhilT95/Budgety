@@ -14,6 +14,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/primaryLightColor"
         android:fillViewport="true">
 
         <LinearLayout
@@ -41,8 +42,6 @@
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_account_circle_grey" />
             </com.google.android.material.card.MaterialCardView>
-
-
 
 
             <EditText
@@ -79,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/login_create_element_margin"
                 android:text="@string/action_create_account" />
-                 <!--android:layout_weight="0"-->
+            <!--android:layout_weight="0"-->
 
             <TextView
                 android:id="@+id/back_login"

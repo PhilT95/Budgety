@@ -55,21 +55,27 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     }
 
 
-
-
-
-
     fun setImage(uri: Uri){
         _profilePicture.value = uri
     }
 
 
+    /**
+     * Starts an async Coroutine for the user creation.
+     * @param username submitted username
+     * @param password submitted password
+     */
     fun createUser(username: String, password: String){
         uiScope.async {
             doCreateUser(username, password)
         }
     }
 
+
+    /**
+     * Starts an async Coroutine for the user login. This usually happens right after the creation of the user.
+     * Since the user is freshly created, no validation as in the LoginViewModel is needed.
+     */
     fun login() {
         uiScope.async {
             doLogin()
@@ -77,6 +83,10 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     }
 
 
+    /**
+     * Creates a salted & hashed password, checks for account policies (i.e. is the password long enough).
+     * Sets the errorMessage to the returned code by the function so, if needed, an error message can be displayed depending on the BudgetyError ID
+     */
     private suspend fun doCreateUser(username: String, password: String){
 
         submittedPassword = password
@@ -107,6 +117,10 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
        _errorMessage.value = resultCode
     }
 
+    /**
+     * Does a simple login without further validation.
+     * Only returns error, if user cant be retrieved.
+     */
     private suspend fun doLogin() {
         var resultCode = -1
         withContext(Dispatchers.IO){
@@ -120,6 +134,9 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
 
     }
 
+    /**
+     * Test Method to delete all users. DO NOT USE IN PRODUCTION
+     */
     private fun deleteAllUsers(){
         uiScope.launch {
             withContext(Dispatchers.IO){

@@ -17,12 +17,12 @@
   -->
 
 <resources>
-    <color name="primaryColor">#262a41</color>
-    <color name="primaryLightColor">#4f526c</color>
-    <color name="primaryDarkColor">#00001b</color>
-    <color name="secondaryColor">#3d2a0f</color>
-    <color name="secondaryLightColor">#695236</color>
-    <color name="secondaryDarkColor">#1d0000</color>
-    <color name="primaryTextColor">#ffffff</color>
-    <color name="secondaryTextColor">#ffffff</color>
+    <color name="primaryColor">#212121</color>
+    <color name="primaryLightColor">#484848</color>
+    <color name="primaryDarkColor">#000000</color>
+    <color name="secondaryColor">#212121</color>
+    <color name="secondaryLightColor">#484848</color>
+    <color name="secondaryDarkColor">#000000</color>
+    <color name="primaryTextColor">#777ea4</color>
+    <color name="secondaryTextColor">#777ea4</color>
 </resources>
