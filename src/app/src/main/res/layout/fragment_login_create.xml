@@ -76,20 +76,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/login_create_element_margin"
+                android:enabled="false"
                 android:text="@string/action_create_account" />
             <!--android:layout_weight="0"-->
 
-            <TextView
-                android:id="@+id/back_login"
-                style="@style/Widget.MaterialComponents.TextView"
+            <Button
+                android:id="@+id/button_BackToLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/login_create_element_margin"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="10dp"
-                android:text="@string/login_goback_link"
-                android:textColor="@color/textLinkColor" />
+                android:text="@string/action_GoToLogin" />
 
         </LinearLayout>
 

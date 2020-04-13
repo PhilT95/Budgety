@@ -41,11 +41,18 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     val isLoggedIn : LiveData<Boolean> = _isLoggedIn
 
 
-    private val _profilePicture = MutableLiveData<Uri>()
-    val profilePicture : LiveData<Uri> = _profilePicture
+    private val _profilePicture = MutableLiveData<Uri?>()
+    val profilePicture : LiveData<Uri?> = _profilePicture
 
     private val _errorMessage = MutableLiveData<Int>()
     val errorMessage : LiveData<Int> = _errorMessage
+
+    private val _createLoginFormState = MutableLiveData<Boolean>()
+    val createLoginFormState : LiveData<Boolean> = _createLoginFormState
+
+    var usernameIsEmpty = true
+    var passwordIsEmpty = true
+    var passwordCheckIsEmpty = true
 
     var submittedUserName : String? = null
     var submittedPassword : String? = null
@@ -55,7 +62,7 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
     }
 
 
-    fun setImage(uri: Uri){
+    fun setImage(uri: Uri?){
         _profilePicture.value = uri
     }
 
@@ -144,6 +151,10 @@ class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewM
             }
         }
 
+    }
+
+    fun checkCreateLoginFormState(){
+        _createLoginFormState.value = !usernameIsEmpty && !passwordIsEmpty && !passwordCheckIsEmpty
     }
 
 

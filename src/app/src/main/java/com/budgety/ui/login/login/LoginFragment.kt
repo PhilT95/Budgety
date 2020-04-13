@@ -22,6 +22,8 @@ import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,6 +106,10 @@ class LoginFragment : DialogFragment() {
             else displayErrorMessage(BudgetyErrors.ERROR_LOGIN_USER_WRONG_PASSWORD.code)
         })
 
+        viewModel.loginFormState.observe(viewLifecycleOwner, Observer {
+            binding.login.isEnabled = it
+        })
+
 
         /**
          * Starts Login procedure. The rest of the login algorithm is triggered by Observers.
@@ -118,6 +124,38 @@ class LoginFragment : DialogFragment() {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToLoginCreateFragment()
             )
         }
+
+
+        binding.loginUser.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.usernameIsEmpty = s.isNullOrBlank()
+                viewModel.checkLoginFormState()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+        })
+
+        binding.password.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.passwordIsEmpty = s.isNullOrBlank()
+                viewModel.checkLoginFormState()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+        })
+
 
         return binding.root
     }

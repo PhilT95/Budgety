@@ -57,6 +57,12 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val _errorMessage = MutableLiveData<Int>()
     val errorMessage : LiveData<Int> = _errorMessage
 
+    private val _loginFormState = MutableLiveData<Boolean>()
+    val loginFormState : LiveData<Boolean> = _loginFormState
+
+    var usernameIsEmpty = true
+    var passwordIsEmpty = true
+
     var submittedUserName : String? = null
     var submittedPassword : String? = null
 
@@ -121,6 +127,12 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         else _errorMessage.value = resultCode
 
     }
+
+
+    fun checkLoginFormState() {
+        _loginFormState.value = (!usernameIsEmpty && !passwordIsEmpty)
+    }
+
 
 
 

@@ -13,6 +13,8 @@
         <color name="navigationDrawerItemColorSelected">#5c6bc0</color>
         <color name="navigationDrawerItemColorSelectedFalse">#000000</color>
 
+        <color name="dialogButtonColor">#5c6bc0</color>
+
   </resources>
 
 

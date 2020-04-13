@@ -18,6 +18,7 @@
 package com.budgety.ui.login.create
 
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.ContentValues
@@ -30,6 +31,8 @@ import android.nfc.Tag
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -37,6 +40,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
@@ -89,7 +93,12 @@ class LoginCreateFragment : DialogFragment() {
          * Initiates update of the image view.
          */
         viewModel.profilePicture.observe(viewLifecycleOwner, Observer {
-            binding.accountPicture.setImageURI(viewModel.profilePicture.value)
+            if(it == null) {
+                binding.accountPicture.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_account_circle_grey))
+            }else{
+                binding.accountPicture.setImageURI(viewModel.profilePicture.value)
+            }
+
         })
 
         /**
@@ -112,8 +121,12 @@ class LoginCreateFragment : DialogFragment() {
             if(it) sendLoginData()
         })
 
+        viewModel.createLoginFormState.observe(viewLifecycleOwner, Observer {
+            binding.accountCreate.isEnabled = it
+        })
 
-        binding.backLogin.setOnClickListener {
+
+        binding.buttonBackToLogin.setOnClickListener {
             findNavController().navigate(
                     LoginCreateFragmentDirections.actionLoginCreateFragmentToLoginFragment()
             )
@@ -138,7 +151,49 @@ class LoginCreateFragment : DialogFragment() {
             if(password == passwordCheck){
                 viewModel.createUser(username, password)
             }
+            else{
+                displayErrorMessage(BudgetyErrors.ERROR_CREATE_PASSWORDS_NOT_MATCHING.code)
+            }
         }
+
+        binding.usernameCreate.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.usernameIsEmpty = s.isNullOrBlank()
+                viewModel.checkCreateLoginFormState()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
+        binding.passwordCreate.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.passwordIsEmpty = s.isNullOrBlank()
+                viewModel.checkCreateLoginFormState()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
+        binding.passwordCreateCheck.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.passwordCheckIsEmpty = s.isNullOrBlank()
+                viewModel.checkCreateLoginFormState()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
 
         return binding.root
     }
@@ -160,7 +215,7 @@ class LoginCreateFragment : DialogFragment() {
      */
     private fun selectProfilePicture() {
 
-        val items = arrayOf(resources.getString(R.string.dialog_choosePicture_camera), resources.getString(R.string.dialog_choosePicture_gallery))
+        val items = arrayOf(resources.getString(R.string.dialog_choosePicture_camera), resources.getString(R.string.dialog_choosePicture_gallery), resources.getString(R.string.dialog_choosePicture_remove))
 
         MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.dialog_choosePicture_title)
@@ -168,6 +223,7 @@ class LoginCreateFragment : DialogFragment() {
                     when(which){
                         0 -> dispatchTakePictureIntent()
                         1 -> dispatchPickPictureIntent()
+                        2 -> viewModel.setImage(null)
                     }
                 }
                 .show()
@@ -183,9 +239,14 @@ class LoginCreateFragment : DialogFragment() {
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             viewModel.setImage(currentPhotoPath.toUri())
         }
-        if(requestCode == REQUST_IMAGE_PICKER && resultCode == RESULT_OK){
+        else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_CANCELED){
+            removeImageFile()
+        }
+        else if(requestCode == REQUST_IMAGE_PICKER && resultCode == RESULT_OK){
             if(data != null) viewModel.setImage(data.data!!)
-
+        }
+        else if(requestCode == REQUST_IMAGE_PICKER && resultCode == RESULT_CANCELED){
+            viewModel.setImage(null)
         }
     }
 
@@ -254,6 +315,13 @@ class LoginCreateFragment : DialogFragment() {
         ).apply {
             currentPhotoPath = absolutePath
         }
+    }
+
+    private fun removeImageFile() {
+        val file = File(currentPhotoPath)
+        file.delete()
+        currentPhotoPath = ""
+        viewModel.setImage(null)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

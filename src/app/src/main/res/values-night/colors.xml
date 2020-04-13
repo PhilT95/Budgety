@@ -28,4 +28,6 @@
 
     <color name="navigationDrawerItemColorSelected">#777ea4</color>
     <color name="navigationDrawerItemColorSelectedFalse">#FFFFFF</color>
+
+    <color name="dialogButtonColor">#777ea4</color>
 </resources>
