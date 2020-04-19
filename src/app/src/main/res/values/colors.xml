@@ -9,5 +9,16 @@
         <color name="primaryTextColor">#ffffff</color>
         <color name="secondaryTextColor">#000000</color>
         <color name="textLinkColor">#0000EE</color>
-</resources>
+
+        <color name="navigationDrawerItemColorSelected">#5c6bc0</color>
+        <color name="navigationDrawerItemColorSelectedFalse">#000000</color>
+
+        <color name="dialogButtonColor">#5c6bc0</color>
+
+        <color name="navHeaderTextColor">#000000</color>
+
+  </resources>
+
+
+
 

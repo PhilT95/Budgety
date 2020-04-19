@@ -15,28 +15,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data.database.user
+package com.budgety.util
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
-@Dao
-interface UserDBDao {
-
-    @Insert
-    fun insert(user: BudgetyUser)
-
-    @Update
-    fun update(user: BudgetyUser)
-
-    @Query("SELECT * FROM users WHERE user_name = :username")
-    fun getUser(username: String) : LiveData<BudgetyUser>
-
-    @Query("DELETE FROM users")
-    fun deleteAllUsers()
+fun passwordIsValid(password: String): Boolean{
+    val letter = Pattern.compile("[a-zA-Z]")
+    val digit = Pattern.compile("[0-9]")
 
 
+    val hasLetter = letter.matcher(password)
+    val hasDigit = digit.matcher(password)
+
+    return hasLetter.find() && hasDigit.find()
 }
+

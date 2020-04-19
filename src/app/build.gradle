@@ -68,6 +68,9 @@ dependencies {
     // Use viewModelScope from lifecycle-viewmodel-ktx
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle_version"
 
+    //Use LiveData-LifeCycle Awareness
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha01"
+
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$version_navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$version_navigation"
@@ -120,4 +123,7 @@ dependencies {
     //SQL Cipher
     implementation "net.zetetic:android-database-sqlcipher:$version_sqlcipher"
     implementation "androidx.sqlite:sqlite:$version_sqlite"
+
+    //For Circular ImageView
+    implementation 'androidx.cardview:cardview:1.0.0'
 }

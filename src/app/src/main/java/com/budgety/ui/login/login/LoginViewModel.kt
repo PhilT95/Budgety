@@ -22,8 +22,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import com.budgety.data.LoginRepository
 import com.budgety.data.Result
+import com.budgety.data.database.user.BudgetyUser
+import com.budgety.util.BudgetyErrors
+import com.budgety.util.getNextSalt
+import com.budgety.util.hashStringSha512
+import com.budgety.util.passwordIsValid
 
 import kotlinx.coroutines.*
 
@@ -35,67 +42,100 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 
-    private val _loginResult = MutableLiveData<LoginResult>()
-    val loginResult: LiveData<LoginResult> = _loginResult
 
 
+
+    // Needed so the repository can be private.
+    var user : LiveData<BudgetyUser>? = null
+
+    private val _userIsRetrieved = MutableLiveData<Boolean>()
+    val userIsRetrieved : LiveData<Boolean> = _userIsRetrieved
+
+    private val _userIsValidated = MutableLiveData<Boolean>()
+    val userIsValidated : LiveData<Boolean> = _userIsValidated
+
+    private val _errorMessage = MutableLiveData<Int>()
+    val errorMessage : LiveData<Int> = _errorMessage
+
+    private val _loginFormState = MutableLiveData<Boolean>()
+    val loginFormState : LiveData<Boolean> = _loginFormState
+
+    var usernameIsEmpty = true
+    var passwordIsEmpty = true
+
+    var submittedUserName : String? = null
+    var submittedPassword : String? = null
+
+
+    /**
+     * Saves the submitted login for further processing and loads user from database through the repository
+     * in an async task via Coroutine.
+     * @param username Name of the user to be logged in
+     * @param password Submitted password for the provided user.
+     */
     fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
+        submittedUserName = username
+        submittedPassword = password
 
-        if(validateLogin(username, password)){
-            uiScope.launch {
-                withContext(Dispatchers.IO) {
-                    when(val result = loginRepository.login(username,password)) {
-                        is Result.Success -> _loginResult.postValue(LoginResult(success = result.data))
-                        is Result.ErrorUserNotFound -> _loginResult.postValue(LoginResult(error = 0))
-                        is Result.ErrorWrongPassword -> _loginResult.postValue(LoginResult(error = 1))
-                        is Result.LoginException -> _loginResult.postValue(LoginResult(error = 2))
-                    }
 
-                }
+
+        uiScope.async {
+            getUser()
+        }
+    }
+
+
+    /**
+     * Validates the submitted values saved in the viewModel against the provided values retrieved from the saved user.
+     * The submitted password will be hashed and salted and the byte arrays are then compared to each other.
+     * If no error occurs, the validated Flag will be set to true, else the error message is updated.
+     * @param userPassword Hashed Password of the user saved in the database
+     * @param userSalt Salt of the of the user saved in the database
+     */
+    fun validateLogin(userPassword: ByteArray, userSalt : ByteArray){
+        if (loginRepository.user != null){
+            val submittedPasswordHash = hashStringSha512(submittedPassword!!, userSalt)
+            if(submittedPasswordHash.contentEquals(userPassword)){
+                _userIsValidated.value = true
+            }else{
+                _errorMessage.value = BudgetyErrors.ERROR_LOGIN_USER_WRONG_PASSWORD.code
             }
+        }else{
+            _errorMessage.value = BudgetyErrors.ERROR_LOGIN_USER_NOT_FOUND.code
         }
-        else{
-            _loginResult.value = LoginResult(error = 3)
+
+
+
+    }
+
+
+    /**
+     * Executes the login function of the repository.
+     * If an error occurs, the error code will be written to the LiveData object and an error message can be displayed.
+     * If no error occurs, the user is updated with the user of the loginRepository.
+     */
+    private suspend fun getUser() {
+        var resultCode = -1
+
+        withContext(Dispatchers.IO){
+            resultCode = loginRepository.login(submittedUserName!!)
         }
-
-    }
-
-
-    private fun validateLogin(username: String, password: String) : Boolean {
-        if(checkUsername(username) && checkPassword(password)){
-            return true
+        if(resultCode == BudgetyErrors.LOGIN_SUCCESS.code){
+            user= loginRepository.user
+            _userIsRetrieved.value = true
         }
-        return false
+        else _errorMessage.value = resultCode
+
+    }
+
+
+    fun checkLoginFormState() {
+        _loginFormState.value = (!usernameIsEmpty && !passwordIsEmpty)
     }
 
 
 
 
-    // A placeholder username validation check
-    private fun isUserNameValid(username: String): Boolean {
-        return if (username.contains('@')) {
-            Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        } else {
-            username.isNotBlank()
-        }
-    }
-
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5
-    }
-
-    private fun checkUsername(username: String) : Boolean{
-        if(username.isEmpty() || username == "") return false
-
-        return true
-    }
-
-    private fun checkPassword(password: String): Boolean{
-        if(password.length < 6) return false
-        return true
-    }
 
 
 

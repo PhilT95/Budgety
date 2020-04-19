@@ -25,21 +25,13 @@ package com.budgety.data
 sealed class Result<out T : Any> {
 
     data class Success<out T : Any>(val data: T) : Result<T>()
-    data class ErrorWrongPassword(val error: String): Result<Nothing>()
-    data class ErrorUserNotFound(val error: String): Result<Nothing>()
-
-
-    data class LoginException(val exception: Exception) : Result<Nothing>()
-    data class CreateException(val exception: Exception): Result<Nothing>()
+    data class Error(val error: Int) : Result<Nothing>()
 
     override fun toString(): String {
         return when (this) {
             is Success<*> -> "Success[data=$data]"
-            is ErrorWrongPassword -> "Error[errorPasswordWrong=$error]"
-            is ErrorUserNotFound -> "Error[errorUserNotFound=$error]"
 
-            is LoginException -> "Error[error=$exception]"
-            is CreateException -> "Error[error=$exception]"
+            is Error -> "Error[error=$error]"
         }
     }
 }

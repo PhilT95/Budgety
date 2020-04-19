@@ -13,25 +13,40 @@
 <!--    android:theme="@style/ThemeOverlay.AppCompat.Dark"-->
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/nav_header_desc"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/ic_account_circle_grey" />
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:elevation="12dp"
+        android:shape="ring"
+        android:thicknessRatio="1.9"
+        app:cardCornerRadius="30dp">
+
+        <ImageView
+            android:id="@+id/main_account_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/prompt_picture_profile_desc"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_account_circle_grey" />
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
+        android:id="@+id/header_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/AppTheme"
+        android:textColor="@color/navHeaderTextColor"
+        android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/header_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle" />
+        android:text="@string/nav_header_subtitle"
+        android:textAppearance="@style/AppTheme"
+        android:textColor="@color/navHeaderTextColor"
+        android:textSize="14sp" />
 
 </LinearLayout>

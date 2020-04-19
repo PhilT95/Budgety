@@ -8,4 +8,7 @@
     <dimen name="login_standard_margin">20dp</dimen>
     <dimen name="login_create_element_margin">10dp</dimen>
 
+
+    <dimen name="dialog_select_image_origin_size">24dp</dimen>
+
 </resources>

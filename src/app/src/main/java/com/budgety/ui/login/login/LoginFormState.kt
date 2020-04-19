@@ -15,28 +15,6 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data.database.user
+package com.budgety.ui.login.login
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-
-@Dao
-interface UserDBDao {
-
-    @Insert
-    fun insert(user: BudgetyUser)
-
-    @Update
-    fun update(user: BudgetyUser)
-
-    @Query("SELECT * FROM users WHERE user_name = :username")
-    fun getUser(username: String) : LiveData<BudgetyUser>
-
-    @Query("DELETE FROM users")
-    fun deleteAllUsers()
-
-
-}
+data class LoginFormState(val usernameError: Int? = null, val passwordError: Int? = null, val isDataValid: Boolean = false)

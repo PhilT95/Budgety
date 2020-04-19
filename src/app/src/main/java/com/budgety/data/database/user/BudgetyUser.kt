@@ -38,8 +38,8 @@ data class BudgetyUser(
         @ColumnInfo(name = "user_salt", typeAffinity = ColumnInfo.BLOB)
         val userSalt: ByteArray,
 
-        @ColumnInfo(name = "user_image", typeAffinity = ColumnInfo.BLOB)
-        val userImage: ByteArray,
+        @ColumnInfo(name = "user_image")
+        val userImage: String? = null,
 
         @ColumnInfo(name = "user_backup_setting", typeAffinity = ColumnInfo.INTEGER)
         val userBackupSetting: Int = 0,
@@ -53,11 +53,15 @@ data class BudgetyUser(
 
                 if(other.javaClass == javaClass){
                         if(userID == other.userID || userName == other.userName){
-                                if(userImage.contentEquals(other.userImage) &&
-                                        userPassword.contentEquals(other.userPassword) &&
+                                if     (userPassword.contentEquals(other.userPassword) &&
                                         userBackupSetting == other.userBackupSetting &&
                                         userBackupNext == other.userBackupNext &&
-                                        userSalt.contentEquals(other.userSalt))
+                                        userSalt.contentEquals(other.userSalt)){
+                                        if(userImage != null && other.userImage != null){
+                                                if(userImage == other.userImage) return true
+                                        }
+                                        return true
+                                }
                                 return true
                         }
                 }

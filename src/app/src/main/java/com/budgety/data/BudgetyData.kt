@@ -15,28 +15,36 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.budgety.data.database.user
+package com.budgety.data
 
+import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.lifecycle.MutableLiveData
+import com.budgety.data.database.user.BudgetyUser
+import com.budgety.data.database.user.UserDB
+import com.budgety.data.database.user.UserDBDao
 
-@Dao
-interface UserDBDao {
+object BudgetyData {
 
-    @Insert
-    fun insert(user: BudgetyUser)
 
-    @Update
-    fun update(user: BudgetyUser)
+    private lateinit var loginRepository : LoginRepository
 
-    @Query("SELECT * FROM users WHERE user_name = :username")
-    fun getUser(username: String) : LiveData<BudgetyUser>
+    var userRepository : LiveData<BudgetyUser>? = null
+    val userGUI = MutableLiveData<BudgetyUser>()
 
-    @Query("DELETE FROM users")
-    fun deleteAllUsers()
+
+
+
+
+    fun initLoginRepository(context: Context){
+        loginRepository = LoginRepository(UserDB.getInstance(context).userDBDao)
+    }
+
+    fun login(username: String){
+        loginRepository.login(username)
+        userRepository = loginRepository.user
+    }
+
 
 
 }

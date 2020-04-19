@@ -19,33 +19,149 @@ package com.budgety.ui.login.create
 
 import android.graphics.Bitmap
 import android.media.Image
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.budgety.data.LoginRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.budgety.util.BudgetyErrors
+import com.budgety.util.getNextSalt
+import com.budgety.util.hashStringSha512
+import com.budgety.util.passwordIsValid
+import kotlinx.coroutines.*
 
 class LoginCreateViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
     private val viewModelJob = Job()
 
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val uiScope = CoroutineScope(Dispatchers.Main
+            + viewModelJob)
 
-    private val _isSubmittable = MutableLiveData<Boolean>()
-    val isSubmittable : LiveData<Boolean> = _isSubmittable
-
-    private val _profilePicture = MutableLiveData<Bitmap>()
-    val profilePicture : LiveData<Bitmap> = _profilePicture
+    private val _isLoggedIn = MutableLiveData<Boolean>()
+    val isLoggedIn : LiveData<Boolean> = _isLoggedIn
 
 
+    private val _profilePicture = MutableLiveData<Uri?>()
+    val profilePicture : LiveData<Uri?> = _profilePicture
 
+    private val _errorMessage = MutableLiveData<Int>()
+    val errorMessage : LiveData<Int> = _errorMessage
 
+    private val _createLoginFormState = MutableLiveData<Boolean>()
+    val createLoginFormState : LiveData<Boolean> = _createLoginFormState
 
-    fun setImage(picture : Bitmap){
-        _profilePicture.value = picture
+    var usernameIsEmpty = true
+    var passwordIsEmpty = true
+    var passwordCheckIsEmpty = true
+
+    var submittedUserName : String? = null
+    var submittedPassword : String? = null
+
+    init {
+        deleteAllUsers()
     }
+
+
+    fun setImage(uri: Uri?){
+        _profilePicture.value = uri
+    }
+
+
+    /**
+     * Starts an async Coroutine for the user creation.
+     * @param username submitted username
+     * @param password submitted password
+     */
+    fun createUser(username: String, password: String){
+        uiScope.async {
+            doCreateUser(username, password)
+        }
+    }
+
+
+    /**
+     * Starts an async Coroutine for the user login. This usually happens right after the creation of the user.
+     * Since the user is freshly created, no validation as in the LoginViewModel is needed.
+     */
+    fun login() {
+        uiScope.async {
+            doLogin()
+        }
+    }
+
+
+    /**
+     * Creates a salted & hashed password, checks for account policies (i.e. is the password long enough).
+     * Sets the errorMessage to the returned code by the function so, if needed, an error message can be displayed depending on the BudgetyError ID
+     */
+    private suspend fun doCreateUser(username: String, password: String){
+
+        submittedPassword = password
+        submittedUserName = username
+        val salt = getNextSalt()
+        val saltedPassword = hashStringSha512(password, salt)
+        var resultCode = -1
+
+        if(password.length>5){
+            if(passwordIsValid(password)){
+                if(!password.contains(username)){
+                        withContext(Dispatchers.IO){
+                            resultCode = loginRepository.createUser(username, saltedPassword, salt, profilePicture.value.toString())
+                        }
+                }
+                else{
+                    resultCode = BudgetyErrors.ERROR_CREATE_USERNAME_IN_PASSWORD.code
+                }
+            }
+            else{
+                resultCode = BudgetyErrors.ERROR_CREATE_PASSWORD_NOT_ALLOWED.code
+            }
+        }
+        else{
+            resultCode = BudgetyErrors.ERROR_CREATE_PASSWORD_TO_SHORT.code
+        }
+
+       _errorMessage.value = resultCode
+    }
+
+    /**
+     * Does a simple login without further validation.
+     * Only returns error, if user cant be retrieved.
+     */
+    private suspend fun doLogin() {
+        var resultCode = -1
+        withContext(Dispatchers.IO){
+            resultCode = loginRepository.login(submittedUserName!!)
+        }
+        if(resultCode == BudgetyErrors.LOGIN_SUCCESS.code){
+
+            _isLoggedIn.value = true
+        }
+        else _errorMessage.value = resultCode
+
+    }
+
+    /**
+     * Test Method to delete all users. DO NOT USE IN PRODUCTION
+     */
+    private fun deleteAllUsers(){
+        uiScope.launch {
+            withContext(Dispatchers.IO){
+                loginRepository.deleteAllUsers()
+            }
+        }
+
+    }
+
+    fun checkCreateLoginFormState(){
+        _createLoginFormState.value = !usernameIsEmpty && !passwordIsEmpty && !passwordCheckIsEmpty
+    }
+
+
+
+
+
+
 
 
 
