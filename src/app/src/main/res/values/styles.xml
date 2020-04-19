@@ -12,6 +12,7 @@
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="actionMenuTextColor">@color/primaryTextColor</item>
         <item name="buttonBarButtonStyle">@color/dialogButtonColor</item>
+        <item name="android:textColor">@color/secondaryTextColor</item>
     </style>
 
     <style name="LoginTheme" parent="Theme.MaterialComponents.DayNight">

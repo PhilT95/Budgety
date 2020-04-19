@@ -33,12 +33,19 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.budgety.data.BudgetyData
+import com.budgety.data.database.user.BudgetyUser
+import com.budgety.data.database.user.UserDB
 import com.budgety.ui.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -50,15 +57,23 @@ const val LOGIN_REQUEST = 1
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private val user = MutableLiveData<String>()
+
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        BudgetyData.initLoginRepository(applicationContext)
+
+        if(BudgetyData.userGUI.value == null){
+            getLoggedInUser()
+        }
+
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
 
 
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -71,22 +86,27 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val headerView = navView.getHeaderView(0)
         val userText = headerView.findViewById<TextView>(R.id.header_user)
+        val userImage = headerView.findViewById<ImageView>(R.id.main_account_picture)
         val navController = findNavController(R.id.nav_host_fragment)
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_about, R.id.nav_accounts, R.id.nav_budgets, R.id.nav_categories, R.id.nav_debts, R.id.nav_planned, R.id.nav_settings, R.id.nav_stores, R.id.nav_templates), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        user.observe(this, Observer {
-            userText.text = it
-            Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT)
+
+        BudgetyData.userGUI.observe(this, Observer {
+            userText.text = it.userName
+            if(!it.userImage.isNullOrBlank()){
+                userImage.setImageURI(it.userImage.toUri())
+            }
+            else{
+                //userImage.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.ic_account_circle_grey))
+            }
+
+
         })
-
-
-        getLoggedInUser()
-
-
 
     }
 
@@ -113,7 +133,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == LOGIN_REQUEST && resultCode == Activity.RESULT_OK){
-            user.value = data?.getStringExtra("username")
+            val name = data?.getStringExtra("username")
+            if(!name.isNullOrEmpty()) {
+                BudgetyData.login(name)
+                BudgetyData.userRepository?.observe(this, Observer {
+                    if (it != null) {
+                        BudgetyData.userGUI.value = it
+                    }
+                })
+            }
+
+
         }
         super.onActivityResult(requestCode, resultCode, data)
 

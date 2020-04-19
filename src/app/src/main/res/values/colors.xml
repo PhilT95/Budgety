@@ -15,6 +15,8 @@
 
         <color name="dialogButtonColor">#5c6bc0</color>
 
+        <color name="navHeaderTextColor">#000000</color>
+
   </resources>
 
 

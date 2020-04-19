@@ -23,11 +23,11 @@
     <color name="secondaryColor">#ffa726</color>
     <color name="secondaryLightColor">#FFD95B</color>
     <color name="secondaryDarkColor">#c77800</color>
-    <color name="primaryTextColor">#777ea4</color>
-    <color name="secondaryTextColor">#777ea4</color>
+    <color name="primaryTextColor">#99a3d8</color>
+    <color name="secondaryTextColor">#99a3d8</color>
 
-    <color name="navigationDrawerItemColorSelected">#777ea4</color>
+    <color name="navigationDrawerItemColorSelected">#99a3d8</color>
     <color name="navigationDrawerItemColorSelectedFalse">#FFFFFF</color>
 
-    <color name="dialogButtonColor">#777ea4</color>
+    <color name="dialogButtonColor">#99a3d8</color>
 </resources>
