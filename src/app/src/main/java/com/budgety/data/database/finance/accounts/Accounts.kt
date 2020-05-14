@@ -24,25 +24,25 @@ import androidx.room.*
         indices = [Index(value = ["account_number"], unique = true)])
 data class AccountGeneral(
         @PrimaryKey(autoGenerate = true)
-        val ID : Long = 0L,
+        val aid : Long = 0L,
 
         @ColumnInfo(name = "account_number")
-        val number : Long?,
+        val accNumber : Long?,
 
         @ColumnInfo(name = "account_name")
-        var name : String,
+        var accName : String,
 
         @ColumnInfo(name = "account_type")
-        val type : Byte,
+        val accType : Byte,
 
         @ColumnInfo(name = "account_currency")
-        val currency: Int,
+        val accCurrency: Long,
 
         @ColumnInfo(name = "account_value")
-        var value : Int,
+        var accValue : Int,
 
         @ColumnInfo(name = "account_color")
-        var color : Long
+        var accColor : Long
 
 )
 
@@ -55,25 +55,25 @@ data class AccountGeneral(
                 onDelete = ForeignKey.CASCADE)])
 data class AccountCredit(
         @PrimaryKey(autoGenerate = true)
-        val ID : Long = 0L,
+        val cid : Long = 0L,
 
         @ColumnInfo(name = "account_number")
-        var number: Int,
+        var cNumber: Int,
 
         @ColumnInfo(name = "account_limit")
-        var limit : Int,
+        var cLimit : Int,
 
-        @ColumnInfo(name = "account_payment_data")
-        var paymentDate: Long,
+        @ColumnInfo(name = "account_payment_date")
+        var cPaymentDate: Long,
 
         @ColumnInfo(name = "account_balance_displayOption")
-        var balanceDisplayOption : Byte = 0,
+        var cBalanceDisplayOption : Byte = 0,
 
         @ColumnInfo(name = "account_interest")
-        var interest : Float = 0F,
+        var cInterest : Float = 0F,
 
         @ColumnInfo(name = "account_payment_interval")
-        var paymentInterval : Byte
+        var cPaymentInterval : Byte
 
 )
 
@@ -85,19 +85,23 @@ data class AccountCredit(
                 onDelete = ForeignKey.CASCADE)])
 data class AccountSaving(
         @PrimaryKey(autoGenerate = true)
-        val ID : Long = 0L,
+        val  sid : Long = 0L,
 
         @ColumnInfo(name = "account_number")
-        var number: Int,
+        var sNumber: Int,
 
         @ColumnInfo(name = "account_interest_flag")
-        var hasInterest : Boolean = true,
+        var sHasInterest : Boolean = true,
 
         @ColumnInfo(name = "account_interest")
-        var interest : Float,
+        var sInterest : Float,
 
         @ColumnInfo(name = "account_interest_dueDate")
-        var interestDueDate : Long
+        var sInterestDueDate : Long,
+
+        @ColumnInfo(name = "account_interest_interval")
+        var sPaymentInterval : Byte
+
 
 )
 
